@@ -1,6 +1,10 @@
 # pomo
 
-A terminal pomodoro timer in plain bash, no dependencies.
+A terminal pomodoro timer in plain bash. One file, no dependencies, nothing to build.
+
+![pomo demo](demo.gif)
+
+## Usage
 
 ```
 pomo              # 25 min work, 5 min break, 15 min long break after 4 rounds
@@ -19,3 +23,7 @@ At the end of each stage you get a desktop notification (`notify-send`) and a so
 git clone https://github.com/pgrig/pomo ~/Projects/pomo
 ln -s ~/Projects/pomo/pomo ~/.local/bin/pomo
 ```
+
+## License
+
+[MIT](LICENSE)
