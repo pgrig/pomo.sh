@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Pomodoro timer: pomo [work] [break] [long break] [rounds]
+# Durations are minutes (25) or seconds (90s). Defaults: 25 5 15 4.
+# Keys: p — pause, s — skip stage, q — quit.
+
+to_sec() { [[ $1 == *s ]] && echo "${1%s}" || echo $(( $1 * 60 )); }
+
+work=$(to_sec "${1:-25}")
+rest=$(to_sec "${2:-5}")
+long=$(to_sec "${3:-15}")
+rounds=${4:-4}
+
+notify() {
+    notify-send -u critical -a Pomodoro "$1" "$2" 2>/dev/null
+    canberra-gtk-play -i alarm-clock-elapsed 2>/dev/null &
+}
+
+cleanup() { tput cnorm; echo; exit 0; }
+trap cleanup INT TERM
+
+# countdown <seconds> <stage label>
+countdown() {
+    local end=$(( $(date +%s) + $1 )) left key
+    while (( (left = end - $(date +%s)) > 0 )); do
+        printf '\r\033[K%s  %02d:%02d   [p pause · s skip · q quit]' "$2" $(( left / 60 )) $(( left % 60 ))
+        read -rsn1 -t 1 key
+        case $key in
+            p) printf '\r\033[K%s  %02d:%02d   PAUSED — press any key' "$2" $(( left / 60 )) $(( left % 60 ))
+               read -rsn1
+               end=$(( $(date +%s) + left )) ;;
+            s) break ;;
+            q) cleanup ;;
+        esac
+    done
+    printf '\r\033[K'
+}
+
+tput civis
+n=1
+while true; do
+    countdown "$work" "🍅 Work $(( (n - 1) % rounds + 1 ))/$rounds"
+    echo "✔ Pomodoro $n finished at $(date +%H:%M)"
+    if (( n % rounds == 0 )); then
+        notify "Long break" "$rounds pomodoros done — take a rest."
+        countdown "$long" "☕ Long break"
+    else
+        notify "Break" "Pomodoro $n done."
+        countdown "$rest" "☕ Break"
+    fi
+    notify "Back to work" "Break is over."
+    n=$(( n + 1 ))
+done
