@@ -1,4 +1,4 @@
-# pomo
+# pomo.sh
 
 A terminal pomodoro timer in plain bash. One file, no dependencies, nothing to build.
 
@@ -20,8 +20,8 @@ At the end of each stage you get a desktop notification (`notify-send`) and a so
 ## Install
 
 ```
-git clone https://github.com/pgrig/pomo ~/Projects/pomo
-ln -s ~/Projects/pomo/pomo ~/.local/bin/pomo
+git clone https://github.com/pgrig/pomo.sh ~/Projects/pomo.sh
+ln -s ~/Projects/pomo.sh/pomo ~/.local/bin/pomo
 ```
 
 ## License
